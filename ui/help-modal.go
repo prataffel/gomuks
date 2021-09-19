@@ -159,7 +159,7 @@ func NewHelpModal(parent *MainView, target string) *HelpModal {
 
 	box := mauview.NewBox(text).
 		SetBorder(true).
-		SetTitle("(F1)Help - (k)eyboard shortcuts - (q)uit").
+		SetTitle("(F1)Help - keyboard (s)hortcuts - (q)uit").
 		SetBlurCaptureFunc(func() bool {
 			hm.parent.HideModal()
 			return true
@@ -181,7 +181,7 @@ func (hm *HelpModal) OnKeyEvent(event mauview.KeyEvent) bool {
 	case c == 'q':
 		hm.parent.HideModal()
 		return true
-	case c == 'k':
+	case c == 's':
 		hm.parent.HideModal()
 		hm.parent.ShowModal(NewHelpModal(hm.parent, "kb"))
 		return true
