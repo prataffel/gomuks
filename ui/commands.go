@@ -113,6 +113,24 @@ func cmdRainbowMe(cmd *Command) {
 	makeRainbow(cmd, event.MsgEmote)
 }
 
+func makeHtml(cmd *Command, msgtype event.MessageType) {
+	if len(cmd.Args) == 0 {
+		cmd.Reply("Usage: /html <message>")
+		return
+	}
+	htmlInput := strings.Join(cmd.Args, " ")
+	htmlBody := htmlSanitize(htmlInput)
+	go cmd.Room.SendMessageHTML(msgtype, htmlStrip(htmlInput), htmlBody)
+}
+
+func cmdHtml(cmd *Command) {
+	makeHtml(cmd, event.MsgText)
+}
+
+func cmdHtmlme(cmd *Command) {
+	makeHtml(cmd, event.MsgEmote)
+}
+
 func cmdNotice(cmd *Command) {
 	go cmd.Room.SendMessage(event.MsgNotice, strings.Join(cmd.Args, " "))
 }
@@ -454,8 +472,24 @@ func cmdUnknownCommand(cmd *Command) {
 }
 
 func cmdHelp(cmd *Command) {
+	target := "main"
 	view := cmd.MainView
-	view.ShowModal(NewHelpModal(view))
+
+	if len(cmd.Args) > 0 {
+		switch cmd.Args[0] {
+		case "keyboard":
+			fallthrough
+		case "shortcuts":
+			fallthrough
+		case "kb":
+			target = "kb"
+		default:
+			cmd.Reply("That help target doesn't exist. (Try just /help)")
+			return
+		}
+	}
+
+	view.ShowModal(NewHelpModal(view, target))
 }
 
 func cmdLeave(cmd *Command) {

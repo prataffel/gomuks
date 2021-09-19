@@ -155,6 +155,8 @@ func NewCommandProcessor(parent *MainView) *CommandProcessor {
 			"msetstate":  cmdMSetState,
 			"roomnick":   cmdRoomNick,
 			"rainbow":    cmdRainbow,
+			"html":       cmdHtml,
+			"htmlme":     cmdHtmlme,
 			"rainbowme":  cmdRainbowMe,
 			"notice":     cmdNotice,
 			"alias":      cmdAlias,
