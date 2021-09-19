@@ -27,3 +27,5 @@ require (
 	maunium.net/go/mauview v0.1.2
 	maunium.net/go/tcell v0.2.0
 )
+
+replace maunium.net/go/mauview => github.com/prataffel/mauview v0.1.3-0.20210919194257-aad50fb14a04
