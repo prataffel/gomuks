@@ -180,13 +180,17 @@ func (view *MainView) OnKeyEvent(event mauview.KeyEvent) bool {
 
 	if event.Modifiers() == tcell.ModCtrl || event.Modifiers() == tcell.ModAlt {
 		switch {
+		case c == 'j' || k == tcell.KeyCtrlJ:
+			view.SwitchRoom(view.roomList.Next())
+		case c == 'k' || k == tcell.KeyCtrlK:
+			view.SwitchRoom(view.roomList.Previous())
 		case k == tcell.KeyDown:
 			view.SwitchRoom(view.roomList.Next())
 		case k == tcell.KeyUp:
 			view.SwitchRoom(view.roomList.Previous())
 		case c == 'f' || k == tcell.KeyCtrlF:
 			fallthrough
-		case c == 'k' || k == tcell.KeyCtrlK:
+		case c == 'o' || k == tcell.KeyCtrlO:
 			view.ShowModal(NewFuzzySearchModal(view, 42, 12))
 		case k == tcell.KeyHome:
 			msgView := view.currentRoom.MessageView()

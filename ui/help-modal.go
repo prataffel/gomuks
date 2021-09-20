@@ -88,14 +88,14 @@ const keyboardHelp = `NOTE: Ctrl and Alt are interchangeable in most keybindings
 ## Navigation
 ##
 
-Ctrl +    ↑|↓       - Navigate through rooms.
+Ctrl + ↑|↓ / j|k    - Navigate through rooms.
 
 Ctrl + PgUp|PgDown  - Scroll through current room.
 
 
 ##  By Search:
 
-1) Ctrl + [K]      - Open a fuzzy finder to locate rooms by typing.
+1) Ctrl + [O]      - Open a fuzzy finder to locate rooms by typing.
         |  ≍
         ╰▹[F]
 
