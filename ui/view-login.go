@@ -19,15 +19,17 @@ package ui
 import (
 	"math"
 
-	"maunium.net/go/mautrix/id"
-	"maunium.net/go/tcell"
+	"github.com/mattn/go-runewidth"
+
+	"go.mau.fi/mauview"
+	"go.mau.fi/tcell"
 
 	"maunium.net/go/mautrix"
-	"maunium.net/go/mauview"
+	"maunium.net/go/mautrix/id"
 
 	"maunium.net/go/gomuks/config"
 	"maunium.net/go/gomuks/debug"
-	"maunium.net/go/gomuks/interface"
+	ifc "maunium.net/go/gomuks/interface"
 )
 
 type LoginView struct {
@@ -139,7 +141,7 @@ func (view *LoginView) Error(err string) {
 			view.AddComponent(view.error, 1, 11, 3, 1)
 		}
 		view.error.SetText(err)
-		errorHeight := int(math.Ceil(float64(mauview.StringWidth(err)) / 45))
+		errorHeight := int(math.Ceil(float64(runewidth.StringWidth(err)) / 45))
 		view.container.SetHeight(14 + errorHeight)
 		view.SetRow(11, errorHeight)
 	}

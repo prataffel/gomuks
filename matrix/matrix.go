@@ -116,7 +116,7 @@ func (c *Container) InitClient() error {
 	if err != nil {
 		return fmt.Errorf("failed to create mautrix client: %w", err)
 	}
-	c.client.UserAgent = fmt.Sprintf("gomuks %s (with mautrix-go %s)", c.gmx.Version(), mautrix.Version)
+	c.client.UserAgent = fmt.Sprintf("gomuks/%s %s", c.gmx.Version(), mautrix.DefaultUserAgent)
 	c.client.Logger = mxLogger{}
 	c.client.DeviceID = c.config.DeviceID
 
@@ -128,7 +128,7 @@ func (c *Container) InitClient() error {
 	if c.history == nil {
 		c.history, err = NewHistoryManager(c.config.HistoryPath)
 		if err != nil {
-			return fmt.Errorf("failed to initialize history: %w\nis gomuks already running?", err)
+			return fmt.Errorf("failed to initialize history: %w", err)
 		}
 	}
 
@@ -202,7 +202,7 @@ func respondHTML(w http.ResponseWriter, status int, message string) {
 }
 
 func (c *Container) SingleSignOn() error {
-	loginURL := c.client.BuildURLWithQuery(mautrix.URLPath{"login", "sso", "redirect"}, map[string]string{
+	loginURL := c.client.BuildURLWithQuery(mautrix.ClientURLPath{"v3", "login", "sso", "redirect"}, map[string]string{
 		"redirectUrl": "http://localhost:29325",
 	})
 	err := open.Open(loginURL)
@@ -460,7 +460,7 @@ func (c *Container) HandlePreferences(source mautrix.EventSource, evt *event.Eve
 		debug.Print("Failed to parse updated preferences:", err)
 		return
 	}
-	debug.Print("Updated preferences:", orig, "->", c.config.Preferences)
+	debug.Printf("Updated preferences: %#v -> %#v", orig, c.config.Preferences)
 	if c.config.AuthCache.InitialSyncDone {
 		c.ui.HandleNewPreferences()
 	}
@@ -472,9 +472,8 @@ func (c *Container) Preferences() *config.UserPreferences {
 
 func (c *Container) SendPreferencesToMatrix() {
 	defer debug.Recover()
-	debug.Print("Sending updated preferences:", c.config.Preferences)
-	u := c.client.BuildURL("user", string(c.config.UserID), "account_data", AccountDataGomuksPreferences.Type)
-	_, err := c.client.MakeRequest("PUT", u, &c.config.Preferences, nil)
+	debug.Printf("Sending updated preferences: %#v", c.config.Preferences)
+	err := c.client.SetAccountData(AccountDataGomuksPreferences.Type, &c.config.Preferences)
 	if err != nil {
 		debug.Print("Failed to update preferences:", err)
 	}
@@ -840,7 +839,7 @@ func (c *Container) MarkRead(roomID id.RoomID, eventID id.EventID) {
 		defer debug.Recover()
 		err := c.client.MarkRead(roomID, eventID)
 		if err != nil {
-			debug.Print("Failed to mark %s in %s as read: %v", eventID, roomID, err)
+			debug.Printf("Failed to mark %s in %s as read: %v", eventID, roomID, err)
 		}
 	}()
 }
@@ -1098,7 +1097,7 @@ func (c *Container) GetHistory(room *rooms.Room, limit int, dbPointer uint64) ([
 		debug.Printf("Loaded %d events for %s from local cache", len(events), room.ID)
 		return events, newDBPointer, nil
 	}
-	resp, err := c.client.Messages(room.ID, room.PrevBatch, "", 'b', limit)
+	resp, err := c.client.Messages(room.ID, room.PrevBatch, "", 'b', nil, limit)
 	if err != nil {
 		return nil, dbPointer, err
 	}

@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 //go:build cgo
-// +build cgo
 
 package ui
 
@@ -28,11 +27,12 @@ import (
 	"time"
 	"unicode"
 
-	ifc "maunium.net/go/gomuks/interface"
 	"maunium.net/go/mautrix"
 	"maunium.net/go/mautrix/crypto"
 	"maunium.net/go/mautrix/crypto/ssss"
 	"maunium.net/go/mautrix/id"
+
+	ifc "maunium.net/go/gomuks/interface"
 )
 
 func autocompleteDeviceUserID(cmd *CommandAutocomplete) (completions []string, newText string) {
